@@ -2,7 +2,13 @@ run:
   tests: true
   build-tags:
     - bench
-
+  skip-dirs:
+    - exercises/ex1-pic           # Skip this specific exercise
+    - exercises/ex.*/output       # Skip all output directories in exercises
+    - practice/.*/output          # Skip output directories in practice
+    - .git                        # Already have this
+    - vendor                      # Already have this
+    
 linters-settings:
   depguard:
     rules:
