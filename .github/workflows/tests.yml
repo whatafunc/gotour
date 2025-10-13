@@ -1,0 +1,87 @@
+# .github/workflows/ci.yml
+name: CI
+
+on:
+  push:
+    branches: [ main, master, develop ]
+  pull_request:
+    branches: [ main, master ]
+
+env:
+  GO111MODULE: "on"
+  GOLANG_VERSION: ~1.24.5
+  GOLANGCI_LINT_VERSION: v1.63.4
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: ${{ env.GOLANG_VERSION }}
+
+      - name: Check out code
+        uses: actions/checkout@v3
+
+      - name: Lint exercises
+        uses: golangci/golangci-lint-action@v3
+        with:
+          version: ${{ env.GOLANGCI_LINT_VERSION }}
+          working-directory: exercises
+
+      - name: Lint practice
+        uses: golangci/golangci-lint-action@v3
+        with:
+          version: ${{ env.GOLANGCI_LINT_VERSION }}
+          working-directory: practice
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: ${{ env.GOLANG_VERSION }}
+
+      - name: Check out code
+        uses: actions/checkout@v3
+
+      - name: Test exercises with tests
+        run: |
+          find exercises -name "*_test.go" -exec dirname {} \; | sort -u | while read dir; do
+            echo "Testing $dir"
+            cd "$dir" && go test -v && cd - > /dev/null
+          done
+
+      - name: Test practice with tests
+        run: |
+          find practice -name "*_test.go" -exec dirname {} \; | sort -u | while read dir; do
+            echo "Testing $dir"
+            cd "$dir" && go test -v && cd - > /dev/null
+          done
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: ${{ env.GOLANG_VERSION }}
+
+      - name: Check out code
+        uses: actions/checkout@v3
+
+      - name: Build all exercises
+        run: |
+          find exercises -name "main.go" -exec dirname {} \; | while read dir; do
+            echo "Building $dir"
+            cd "$dir" && go build -o /dev/null . && cd - > /dev/null
+          done
+
+      - name: Build all practice
+        run: |
+          find practice -name "main.go" -exec dirname {} \; | while read dir; do
+            echo "Building $dir"
+            cd "$dir" && go build -o /dev/null . && cd - > /dev/null
+          done
