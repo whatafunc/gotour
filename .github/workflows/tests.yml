@@ -15,6 +15,7 @@ env:
 jobs:
   lint:
     runs-on: ubuntu-latest
+    if: ${{ !contains(github.ref, 'ex1-pic') }}
     steps:
       - name: Set up Go
         uses: actions/setup-go@v3

@@ -14,7 +14,7 @@ func Pic(dx, dy int) [][]uint8 {
 
 			// row[x] = uint8(x * i) // see output img if you can :)
 			// G115: integer overflow conversion int -> uint8
-			row[x] = uint8(x + i) // Example 2: XOR pattern
+			row[x] = uint8(2 + i) // Example 2: XOR pattern
 			// row[x] = uint8((x + y) / 2) // Example 3: Average
 		}
 		arr = append(arr, row)
